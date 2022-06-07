@@ -1,0 +1,27 @@
+---
+
+# Generic
+generic:
+  role: ansible-role-postfix
+  role_short: postfix
+  role_description: |
+    Install/manage Postfix
+
+github:
+  fail_fast: false
+
+molecule:
+  converge:
+    roles:
+      - cron
+      - openssl
+    vars:
+      postfix_ipv6: false
+      postfix_domain: example.com
+      postfix_fqdn: host.example.com
+      postfix_ssl_key: "{{ openssl_server_key }}"
+      postfix_ssl_chain: "{{ openssl_server_crt }}"
+
+ci_templates:
+  requirements.yml:
+    force: false

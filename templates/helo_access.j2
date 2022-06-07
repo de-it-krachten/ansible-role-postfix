@@ -1,0 +1,3 @@
+{% for host in postfix_helo_access|default([]) %}
+{{ host }} OK          
+{% endfor %}

@@ -1,0 +1,19 @@
+---
+
+# list of postfix packages
+postfix_packages:
+  - postfix
+#  - postfix-perl-scripts
+  - mailutils
+#  - cyrus-sasl
+#  - cyrus-sasl-plain
+  - pflogsumm
+
+# postfix service
+postfix_service: postfix
+
+# dovecot delivery command
+postfix_dovecot_deliver: /usr/lib/dovecot/deliver
+
+# postfix log file location
+postfix_maillog: /var/log/mail.log

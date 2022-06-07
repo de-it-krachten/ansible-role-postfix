@@ -1,0 +1,179 @@
+---
+
+# Generic
+generic:
+  role: ansible-role-postfix
+  role_short: postfix
+  role_description: |
+    <put description in .cicd.overwrite>
+
+# Supported platforms
+platforms:
+  - name: Red Hat Enterprise Linux 7
+    ci: false
+  - name: Red Hat Enterprise Linux 8
+    ci: false
+  - name: CentOS 7
+    image: centos7
+#  - name: CentOS 8
+#    image: centos8
+  - name: RockyLinux 8
+    image: rockylinux8
+  - name: AlmaLinux 8
+    image: almalinux8
+    ci: false
+  - name: Debian 10 (Buster)
+    image: debian10
+  - name: Debian 11 (Bullseye)
+    image: debian11
+  - name: Ubuntu 18.04 LTS
+    image: ubuntu1804
+  - name: Ubuntu 20.04 LTS
+    image: ubuntu2004
+  - name: Ubuntu 22.04 LTS
+    image: ubuntu2204
+
+# standard platform we do not support
+platforms_skip: []
+
+# Non-standard platform we do support
+platforms_add: []
+
+# Ansible galaxy
+galaxy:
+  role_name: postfix
+  namespace: de_it_krachten
+  description: postfix
+  author: Mark van Huijstee
+  company: De IT Krachten BV
+  license: MIT
+  min_ansible_version: 2.9
+  platforms:
+    - name: EL
+      versions:
+        - 7
+        - 8
+    - name: Debian
+      versions:
+        - buster
+        - bullseye
+    - name: Ubuntu
+      versions:
+        - 18.04
+        - 20.04
+        - 22.04
+
+# Github
+github:
+  active: true
+  self_hosted: false
+  fail_fast: true
+  parallel: true
+  owner: de-it-krachten
+  repo: ansible-role-postfix
+
+# Gitlab
+gitlab:
+  active: false
+
+# molecule
+molecule:
+  active: true
+  platforms:
+    - name: centos7
+      image: "geerlingguy/docker-centos7-ansible:latest"
+#    - name: centos8
+#      image: "geerlingguy/docker-centos8-ansible:latest"
+    - name: rockylinux8
+      image: "geerlingguy/docker-rockylinux8-ansible:latest"
+#    - name: almalinux8
+#      image: "geerlingguy/docker-almalinux8-ansible:latest"
+    - name: debian10
+      image: "geerlingguy/docker-debian10-ansible:latest"
+    - name: debian11
+      image: "geerlingguy/docker-debian11-ansible:latest"
+    - name: ubuntu1804
+      image: "geerlingguy/docker-ubuntu1804-ansible:latest"
+    - name: ubuntu2004
+      image: "geerlingguy/docker-ubuntu2004-ansible:latest"
+    - name: ubuntu2204
+      image: "geerlingguy/docker-ubuntu2204-ansible:latest"
+  platforms_skip: []
+  platforms_add: []
+  converge:
+    playbooks: []
+    vars: {}
+  prepare:
+    playbooks: []
+    vars:
+      systemctl_alternative: false
+
+# templates
+ci_templates:
+  meta-main.yml:
+    src: galaxy/templates/meta-main.yml
+    dest: meta/main.yml
+  yamllint:
+    src: yamllint/templates/yamllint
+    dest: .yamllint
+  ci.yml:
+    src: github/templates/ci.yml
+    dest: .github/workflows/ci.yml
+    when: github_runner_cloud
+  ci-self-hosted.yml:
+    src: github/templates/ci-self-hosted.yml
+    dest: .github/workflows/ci.yml
+    when: github_runner_self_hosted
+  release.yml:
+    src: github/templates/release.yml
+    dest: .github/workflows/release.yml
+    when: github_runner_cloud
+  releaserc.yml:
+    src: github/templates/releaserc.yml
+    dest: .releaserc.yml
+    when: github_runner_cloud
+  gitlab-ci.yml:
+    src: gitlab/templates/gitlab-ci.yml
+    dest: .gitlab-ci.yml
+    when: gitlab_active
+  prepare.yml:
+    src: molecule/templates/prepare.yml
+    dest: molecule/default/prepare.yml
+    when: molecule_active
+  molecule.yml.j2:
+    src: molecule/templates/molecule.yml.j2
+    dest: molecule/default/molecule.yml.j2
+    when: molecule_active
+  molecule-test.yml:
+    src: molecule/templates/molecule-test.yml
+    dest: molecule/default/molecule-test.yml
+    when: molecule_active
+  converge.yml:
+    src: molecule/templates/converge.yml
+    dest: molecule/default/converge.yml
+    when: molecule_active
+  verify.yml:
+    src: molecule/templates/verify.yml
+    dest: molecule/default/verify.yml
+    when: molecule_active
+#  requirements.tmpl:
+#    src: molecule/templates/requirements.tmpl
+#    dest: molecule/default/requirements.tmpl
+#    when: molecule_active
+  requirements.yml:
+    src: molecule/templates/requirements.yml
+    dest: molecule/default/requirements.yml
+    when: molecule_active
+  gitignore:
+    src: git/templates/gitignore
+    dest: .gitignore
+    force: false
+  ansible-lint:
+    src: molecule/templates/ansible-lint
+    dest: .ansible-lint
+    force: no
+    when: molecule_active
+  molecule-platforms.yml:
+    src: molecule/templates/molecule-platforms.yml
+    dest: .molecule-platforms.yml
+    force: true

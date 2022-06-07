@@ -1,0 +1,35 @@
+#!/bin/bash
+
+TODAY=`date +"%d-%m-%Y"`
+MAILUSER=sitemaster@{{ postfix_domain }}
+SUBJECT="Logwatch for Postfix"
+DAY=yesterday
+
+# parse command line into arguments and check results of parsing
+while getopts :ds:tu: OPT
+do
+   case $OPT in
+     d) set -vx
+        ;;
+     s) SUBJECT="$OPTARG"
+        ;;
+     t) DAY=today
+        ;;
+     u) MAILUSER="$OPTARG"
+        ;;
+     *) echo "Unknown flag -$OPT given!" >&2
+        exit 1
+        ;;
+   esac
+done
+shift $(($OPTIND -1))
+
+# Create list of messages to filter
+cat <<EOF > /tmp/pf.filter
+## SASL LOGIN authentication failed
+EOF
+
+# Create report
+perl /usr/sbin/pflogsumm -e -d $DAY --problems_first --rej_add_from --verbose_msg_detail {{ postfix_maillog }}* | \
+grep -v -f /tmp/pf.filter | \
+mail -s "$SUBJECT" $MAILUSER

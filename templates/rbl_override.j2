@@ -1,0 +1,3 @@
+{% for host in postfix_rbl_override|default([]) %}
+{{ host }} OK
+{% endfor %}
