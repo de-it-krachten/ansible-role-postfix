@@ -1,0 +1,13 @@
+---
+
+postfix_main_lines:
+  smtpd_recipient_restrictions: |-2
+
+      permit_mynetworks,
+      permit_sasl_authenticated,
+      check_policy_service unix:postgrey/socket,
+      reject_unauth_destination,
+      reject_rhsbl_helo dbl.spamhaus.org,
+      reject_rhsbl_reverse_client dbl.spamhaus.org,
+      reject_rhsbl_sender dbl.spamhaus.org,
+      reject_rbl_client zen.spamhaus.org

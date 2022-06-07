@@ -1,0 +1,6 @@
+{% for tld in postfix_accept_tld %}
+/\.{{ tld }}$/ OK
+{% endfor %}
+{% for tld in postfix_reject_tld %}
+/\.{{ tld }}$/ REJECT
+{% endfor %}

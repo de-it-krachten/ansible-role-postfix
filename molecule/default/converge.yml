@@ -1,0 +1,23 @@
+---
+
+- name: Converge
+  hosts: all
+  vars:
+    postfix_ipv6: False
+    postfix_domain: example.com
+    postfix_fqdn: host.example.com
+    postfix_ssl_key: "{{ openssl_server_key }}"
+    postfix_ssl_chain: "{{ openssl_server_crt }}"
+  pre_tasks:
+    - name: Create 'remote_tmp'
+      file:
+        path: /root/.ansible/tmp
+        state: directory
+        mode: "0700"
+  roles:
+    - cron
+    - openssl
+  tasks:
+    - name: Include role 'ansible-role-postfix'
+      include_role:
+        name: ansible-role-postfix

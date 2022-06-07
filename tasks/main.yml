@@ -1,0 +1,195 @@
+---
+
+- name: Load variables based on OS type
+  include_vars: "{{ lookup('first_found', params) }}"
+  vars:
+    params:
+      files:
+        - "{{ ansible_distribution }}-{{ ansible_distribution_major_version }}.yml"
+        - "{{ ansible_distribution }}.yml"
+        - "family-{{ ansible_os_family }}-{{ ansible_distribution_major_version }}.yml"
+        - "family-{{ ansible_os_family }}.yml"
+        - default.yml
+      paths:
+        - "vars"
+
+- name: Assertions
+  assert:
+    that:
+      - postfix_domain is defined
+      - postfix_fqdn is defined
+      - postfix_ssl_key is defined
+      - postfix_ssl_chain is defined
+
+- name: Install all postfix packages
+  package:
+    name: "{{ postfix_packages }}"
+    state: present
+
+- name: Enable the postfix service
+  service:
+    name: "{{ postfix_service }}"
+    enabled: yes
+
+- name: Check if DH2048 file exists
+  stat:
+    path: /etc/postfix/dh2048.pem
+  register: dh2048
+
+- name: Create /etc/postfix/dh2048.pem
+  command: openssl dhparam -out /etc/postfix/dh2048.pem 2048
+  when: not dh2048.stat.exists
+
+- name: Configuring postfix (main.cf)
+  lineinfile:
+    path:   /etc/postfix/main.cf
+    regexp: "(#)?{{ item.key }}(  *)?=.*"
+    line:   "{{ item.key }} = {{ (item.value|join(', ')) if item.value|type_debug == 'list' else item.value }}"
+  with_dict: "{{ postfix_settings }}"
+  notify: Restart postfix services
+
+- name: Configuring submission (starttls)
+  blockinfile:
+    path: /etc/postfix/master.cf
+    marker: '# {mark} ANSIBLE MANAGED BLOCK - submission'
+    insertbefore: '^#submission .*'
+    block: |
+      submission inet n       -       n       -       -       smtpd
+        -o syslog_name=postfix/submission
+        -o smtpd_tls_security_level=encrypt
+        -o smtpd_sasl_auth_enable=yes
+      #  -o smtpd_reject_unlisted_recipient=no
+      #  -o smtpd_client_restrictions=$mua_client_restrictions
+      #  -o smtpd_helo_restrictions=$mua_helo_restrictions
+      #  -o smtpd_sender_restrictions=$mua_sender_restrictions
+        -o smtpd_recipient_restrictions=permit_sasl_authenticated,reject
+        -o milter_macro_daemon_name=ORIGINATING
+  notify: Restart postfix services
+
+- name: Configuring smtps (SSL/TLS)
+  blockinfile:
+    path: /etc/postfix/master.cf
+    marker: '# {mark} ANSIBLE MANAGED BLOCK - smtps'
+    insertbefore: '^#smtps .*'
+    block: |
+      smtps     inet  n       -       n       -       -       smtpd
+        -o syslog_name=postfix/smtps
+        -o smtpd_tls_wrappermode=yes
+        -o smtpd_sasl_auth_enable=yes
+      #  -o smtpd_reject_unlisted_recipient=no
+      #  -o smtpd_client_restrictions=$mua_client_restrictions
+      #  -o smtpd_helo_restrictions=$mua_helo_restrictions
+      #  -o smtpd_sender_restrictions=$mua_sender_restrictions
+        -o smtpd_recipient_restrictions=permit_sasl_authenticated,reject
+        -o milter_macro_daemon_name=ORIGINATING
+  notify: Restart postfix services
+
+- name: Configuring amavis
+  blockinfile:
+    path: /etc/postfix/master.cf
+    marker: '# {mark} ANSIBLE MANAGED BLOCK - amavisd'
+    # insertbefore: '^#smtps .*'
+    block: |
+      smtp-amavis unix -    -    y    -    2 smtp
+        -o smtp_data_done_timeout=1200
+        -o smtp_send_xforward_command=yes
+        -o disable_dns_lookups=yes
+      127.0.0.1:10025 inet n    -    y    -    - smtpd
+        -o content_filter=
+        -o smtpd_restriction_classes=
+        -o smtpd_client_restrictions=
+        -o smtpd_helo_restrictions=
+        -o smtpd_helo_required=no
+        -o smtpd_sender_restrictions=
+        -o smtpd_recipient_restrictions=permit_mynetworks,reject
+        -o mynetworks=127.0.0.0/8
+        -o strict_rfc821_envelopes=yes
+        -o smtpd_error_sleep_time=0
+        -o smtpd_soft_error_limit=1001
+        -o smtpd_hard_error_limit=1000
+        -o receive_override_options=no_header_body_checks
+        -o disable_vrfy_command=no
+  notify: Restart postfix services
+  when: postfix_amavisd|bool
+
+- name: Create /etc/postfix/virtual
+  template:
+    src: "{{ postfix_virtual }}"
+    dest: /etc/postfix/virtual
+    owner: root
+    group: root
+    mode: '0644'
+  register: _virtual
+  when: postfix_virtual is defined
+
+- name: Convert /etc/postfix/virtual into DB  # noqa no-handler
+  command: postmap /etc/postfix/virtual
+  when: _virtual.changed
+
+- name: Create /etc/postfix/sasl_passwd
+  template:
+    src: sasl_passwd.j2
+    dest: /etc/postfix/sasl_passwd
+    owner: root
+    group: root
+    mode: '0600'
+  register: sasl_passwd
+
+- name: Convert /etc/postfix/sasl_passwd into DB  # noqa no-handler
+  command: postmap /etc/postfix/sasl_passwd
+  when: sasl_passwd.changed
+
+- name: Close /etc/postfix/sasl_passwd.db
+  file:
+    path: /etc/postfix/sasl_passwd.db
+    mode: '0600'
+
+- name: Create whitelists
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: '0644'
+  loop: "{{ postfix_whitelists }}"
+  register: whitelists
+
+- name: Convert whitelist into db format  # noqa no-handler
+  command: postmap {{ item.dest }}
+  loop: "{{ postfix_whitelists }}"
+  when: whitelists.changed
+
+- name: Create blacklists
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: '0644'
+  loop: "{{ postfix_blacklists }}"
+  register: blacklists
+
+- name: Convert blacklist into db format  # noqa no-handler
+  command: postmap {{ item.dest }}
+  loop: "{{ postfix_blacklists }}"
+  when: blacklists.changed
+
+- name: Configuring firewall for postfix (ports)
+  include_role:
+    name: firewall
+  vars:
+    firewall_ports: "{{ postfix_fw_ports }}"
+
+- name: Install postfix report script
+  template:
+    src: postfix_report.sh.j2
+    dest: /usr/local/bin/postfix_report.sh
+    owner: root
+    group: root
+    mode: '0750'
+
+- name: Schedule portfix daily report
+  cron:
+    name: Postfix report
+    weekday: '*'
+    minute: '05'
+    hour: '00'
+    user: root
+    job: /usr/local/bin/postfix_report.sh
+    cron_file: postfix_report
