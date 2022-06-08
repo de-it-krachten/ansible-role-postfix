@@ -43,7 +43,7 @@
 - name: Configuring postfix (main.cf)
   lineinfile:
     path:   /etc/postfix/main.cf
-    regexp: "(#)?{{ item.key }}(  *)?=.*"
+    regexp: "^(#)?{{ item.key }}(\\s)?=.*"
     line:   "{{ item.key }} = {{ (item.value|join(', ')) if item.value|type_debug == 'list' else item.value }}"
   with_dict: "{{ postfix_settings | combine(postfix_settings_overwrite|default({})) }}"
   notify: Restart postfix
