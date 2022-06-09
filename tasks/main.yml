@@ -112,63 +112,37 @@
   notify: Restart postfix
   when: postfix_amavisd|bool
 
-- name: Create /etc/postfix/virtual
-  template:
-    src: "{{ postfix_virtual }}"
-    dest: /etc/postfix/virtual
-    owner: root
-    group: root
-    mode: '0644'
-  register: _virtual
-  when: postfix_virtual is defined
 
-- name: Convert /etc/postfix/virtual into DB  # noqa no-handler
-  command: postmap /etc/postfix/virtual
-  when: _virtual.changed
+# ---------------------------------------------------------
+# Configuration templates
+# ---------------------------------------------------------
 
-- name: Create /etc/postfix/sasl_passwd
-  template:
-    src: sasl_passwd.j2
-    dest: /etc/postfix/sasl_passwd
-    owner: root
-    group: root
-    mode: '0600'
-  register: sasl_passwd
-
-- name: Convert /etc/postfix/sasl_passwd into DB  # noqa no-handler
-  command: postmap /etc/postfix/sasl_passwd
-  when: sasl_passwd.changed
-
-- name: Close /etc/postfix/sasl_passwd.db
-  file:
-    path: /etc/postfix/sasl_passwd.db
-    mode: '0600'
-
-- name: Create whitelists
+- name: Create configuration files from templates
   template:
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
-    mode: '0644'
-  loop: "{{ postfix_whitelists }}"
-  register: whitelists
+    owner: "{{ item.owner | default('root') }}"
+    group: "{{ item.group | default('root') }}"
+    mode: "{{ item.mode | default('0644') }}"
+  loop: "{{ postfix_templates }}"
+  loop_control:
+    label:
+      - "{{ item.src }}"
+      - "{{ item.dest }}"
+  register: _postfix_templates
 
-- name: Convert whitelist into db format  # noqa no-handler
+- name: Convert configuration files into db format  # noqa no-handler
   command: postmap {{ item.dest }}
-  loop: "{{ postfix_whitelists }}"
-  when: whitelists.changed
+  loop: "{{ _postfix_templates.results }}"
+  loop_control:
+    label:
+      - "{{ item.dest }}"
+  when: item.changed
 
-- name: Create blacklists
-  template:
-    src: "{{ item.src }}"
-    dest: "{{ item.dest }}"
-    mode: '0644'
-  loop: "{{ postfix_blacklists }}"
-  register: blacklists
 
-- name: Convert blacklist into db format  # noqa no-handler
-  command: postmap {{ item.dest }}
-  loop: "{{ postfix_blacklists }}"
-  when: blacklists.changed
+# ---------------------------------------------------------
+# Configuration templates
+# ---------------------------------------------------------
 
 - name: Configuring firewall for postfix (ports)
   include_role:

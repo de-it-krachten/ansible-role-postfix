@@ -1,0 +1,3 @@
+{% for check in postfix_header_checks %}
+/^Received:.*\[{{ check }}/    IGNORE
+{% endfor %}
