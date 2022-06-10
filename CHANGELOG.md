@@ -1,3 +1,11 @@
+## [1.0.1](https://github.com/de-it-krachten/ansible-role-postfix/compare/v1.0.0...v1.0.1) (2022-06-10)
+
+
+### Bug Fixes
+
+* add backup of template files ([d9fe240](https://github.com/de-it-krachten/ansible-role-postfix/commit/d9fe240a301730c656c62e2282f3310a79c3f9cf))
+* supress local ip address when sending messages ([0bbc7aa](https://github.com/de-it-krachten/ansible-role-postfix/commit/0bbc7aa1a716ce03259bcbee758984cd02aa1833))
+
 # 1.0.0 (2022-06-07)
 
 
