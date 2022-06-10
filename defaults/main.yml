@@ -138,7 +138,7 @@ postfix_header_checks:
 
 postfix_templates:
   # virtual
-  - src: "{{ postfix_virtual }}"
+  - src: "{{ postfix_virtual | default('virtual.j2') }}"
     dest: /etc/postfix/virtual
   # white lists
   - src: rbl_override.j2
