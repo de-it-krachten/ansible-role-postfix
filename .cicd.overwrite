@@ -7,9 +7,6 @@ generic:
   role_description: |
     Install/manage Postfix
 
-github:
-  fail_fast: false
-
 molecule:
   converge:
     roles:
