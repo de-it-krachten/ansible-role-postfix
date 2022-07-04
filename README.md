@@ -238,6 +238,26 @@ postfix_dovecot_deliver: /usr/lib/dovecot/deliver
 postfix_maillog: /var/log/mail.log
 </pre></code>
 
+### vars/family-RedHat-9.yml
+<pre><code>
+# list of postfix packages
+postfix_packages:
+  - postfix
+  - postfix-perl-scripts
+  - s-nail
+  - cyrus-sasl
+  - cyrus-sasl-plain
+
+# postfix service
+postfix_service: postfix
+
+# dovecot delivery command
+postfix_dovecot_deliver: /usr/libexec/dovecot/deliver
+
+# postfix log file location
+postfix_maillog: /var/log/maillog
+</pre></code>
+
 
 
 ## Example Playbook
