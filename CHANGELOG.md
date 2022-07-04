@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/de-it-krachten/ansible-role-postfix/compare/v1.0.1...v1.1.0) (2022-07-04)
+
+
+### Features
+
+* Add support for RHEL9 ([8565f65](https://github.com/de-it-krachten/ansible-role-postfix/commit/8565f652771f315d72565459cb9b833b86c059e7))
+
 ## [1.0.1](https://github.com/de-it-krachten/ansible-role-postfix/compare/v1.0.0...v1.0.1) (2022-06-10)
 
 
