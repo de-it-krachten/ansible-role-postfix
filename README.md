@@ -12,14 +12,20 @@ Supported platforms
 
 - Red Hat Enterprise Linux 7<sup>1</sup>
 - Red Hat Enterprise Linux 8<sup>1</sup>
+- Red Hat Enterprise Linux 9<sup>1</sup>
 - CentOS 7
+- CentOS 8
 - RockyLinux 8
-- AlmaLinux 8<sup>1</sup>
+- OracleLinux 8
+- AlmaLinux 8
+- AlmaLinux 9
 - Debian 10 (Buster)
 - Debian 11 (Bullseye)
 - Ubuntu 18.04 LTS
 - Ubuntu 20.04 LTS
 - Ubuntu 22.04 LTS
+- Fedora 35
+- Fedora 36
 
 Note:
 <sup>1</sup> : no automated testing is performed on these platforms
@@ -70,6 +76,7 @@ postfix_settings:
   virtual_alias_domains:            "{{ postfix_domains | difference([postfix_domain]) | join(' ') }}"
   message_size_limit:               '52428800'
   mailbox_size_limit:               '0'
+  header_checks:                    'regexp:/etc/postfix/header_checks'
   # amavis ==
   # content_filter:                   'smtp-amavis:[127.0.0.1]:10024'
 
@@ -140,9 +147,9 @@ postfix_settings:
     - reject_rhsbl_sender dbl.spamhaus.org
     - reject_rbl_client zen.spamhaus.org
 
-  # dovecot / lmtp
-  mailbox_transport: lmtp:unix:private/dovecot-lmtp
-  smtputf8_enable: 'no'
+#  # dovecot / lmtp
+#  mailbox_transport: lmtp:unix:private/dovecot-lmtp
+#  smtputf8_enable: 'no'
 
   # Hardening
   disable_vrfy_command: 'yes'
@@ -157,17 +164,32 @@ postfix_rspamd:
 postfix_accept_tld: []
 postfix_reject_tld: []
 
-# whitelist templates
-postfix_whitelists:
+postfix_header_checks:
+  - '10\.'
+  - '172\.'
+  - '192\.168\.'
+
+postfix_templates:
+  # virtual
+  - src: "{{ postfix_virtual | default('virtual.j2') }}"
+    dest: /etc/postfix/virtual
+  # white lists
   - src: rbl_override.j2
     dest: /etc/postfix/rbl_override
   - src: helo_access.j2
     dest: /etc/postfix/helo_access
-
-# blacklist templates
-postfix_blacklists:
+  # black lists
   - src: reject_domains.j2
     dest: /etc/postfix/reject_domains
+  # sasl
+  - src: sasl_passwd.j2
+    dest: /etc/postfix/sasl_passwd
+    owner: root
+    group: root
+    mode: '0600'
+  # remove internal headers
+  - src: header_checks.j2
+    dest: /etc/postfix/header_checks
 
 # Firewall ports to open for incoming traffic
 postfix_fw_ports:
