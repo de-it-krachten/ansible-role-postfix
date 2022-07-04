@@ -14,7 +14,6 @@ Supported platforms
 - Red Hat Enterprise Linux 8<sup>1</sup>
 - Red Hat Enterprise Linux 9<sup>1</sup>
 - CentOS 7
-- CentOS 8
 - RockyLinux 8
 - OracleLinux 8
 - AlmaLinux 8
@@ -236,6 +235,26 @@ postfix_dovecot_deliver: /usr/lib/dovecot/deliver
 
 # postfix log file location
 postfix_maillog: /var/log/mail.log
+</pre></code>
+
+### vars/family-RedHat-9.yml
+<pre><code>
+# list of postfix packages
+postfix_packages:
+  - postfix
+  - postfix-perl-scripts
+  - s-nail
+  - cyrus-sasl
+  - cyrus-sasl-plain
+
+# postfix service
+postfix_service: postfix
+
+# dovecot delivery command
+postfix_dovecot_deliver: /usr/libexec/dovecot/deliver
+
+# postfix log file location
+postfix_maillog: /var/log/maillog
 </pre></code>
 
 
