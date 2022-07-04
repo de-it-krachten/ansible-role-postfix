@@ -18,7 +18,7 @@ molecule:
       postfix_fqdn: host.example.com
       postfix_ssl_key: "{{ openssl_server_key }}"
       postfix_ssl_chain: "{{ openssl_server_crt }}"
-
-ci_templates:
-  requirements.yml:
-    force: false
+  requirements:
+    roles_extra:
+      - cron
+      - openssl
