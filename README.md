@@ -15,6 +15,7 @@ Supported platforms
 - Red Hat Enterprise Linux 9<sup>1</sup>
 - CentOS 7
 - RockyLinux 8
+- RockyLinux 9
 - OracleLinux 8
 - AlmaLinux 8
 - AlmaLinux 9
@@ -264,6 +265,7 @@ postfix_maillog: /var/log/maillog
 <pre><code>
 - name: sample playbook for role 'postfix'
   hosts: all
+  become: "{{ molecule['converge']['become'] | default('yes') }}"
   vars:
     postfix_ipv6: False
     postfix_domain: example.com
