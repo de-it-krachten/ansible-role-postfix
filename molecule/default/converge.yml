@@ -2,6 +2,7 @@
 
 - name: Converge
   hosts: all
+  become: "{{ molecule['converge']['become'] | default('yes') }}"
   vars:
     postfix_ipv6: False
     postfix_domain: example.com
