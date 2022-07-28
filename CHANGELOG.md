@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/de-it-krachten/ansible-role-postfix/compare/v1.1.0...v1.2.0) (2022-07-28)
+
+
+### Features
+
+* Implement ansible-lint v6 support ([2a9ef60](https://github.com/de-it-krachten/ansible-role-postfix/commit/2a9ef60e7415da0b6016b516caa70621afa7d99c))
+
 # [1.1.0](https://github.com/de-it-krachten/ansible-role-postfix/compare/v1.0.1...v1.1.0) (2022-07-04)
 
 
