@@ -11,7 +11,7 @@
     postfix_ssl_chain: "{{ openssl_server_crt }}"
   pre_tasks:
     - name: Create 'remote_tmp'
-      file:
+      ansible.builtin.file:
         path: /root/.ansible/tmp
         state: directory
         mode: "0700"
@@ -20,5 +20,5 @@
     - openssl
   tasks:
     - name: Include role 'ansible-role-postfix'
-      include_role:
+      ansible.builtin.include_role:
         name: ansible-role-postfix

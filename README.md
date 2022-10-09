@@ -6,6 +6,15 @@
 Install/manage Postfix
 
 
+
+## Dependencies
+
+#### Roles
+None
+
+#### Collections
+- community.general
+
 ## Platforms
 
 Supported platforms
@@ -37,7 +46,7 @@ Note:
 postfix_ipv6:                       true
 
 # list of all domains hosted
-postfix_domains:                    "{{ [ postfix_domain ] }}"
+postfix_domains:                    "{{ [postfix_domain] }}"
 
 # Should we configure support for amavisd
 postfix_amavisd:                    false
@@ -55,7 +64,7 @@ postfix_settings:
   mydomain:                         '{{ postfix_domain }}'
   myorigin:                         '$mydomain'
   home_mailbox:                     'mail/'
-  mynetworks:                       "{{ '127.0.0.0/8' if not postfix_ipv6|bool else '127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128' }}"
+  mynetworks:                       "{{ '127.0.0.0/8' if not postfix_ipv6 | bool else '127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128' }}"
   inet_interfaces:                  'all'
   inet_protocols:                   'ipv4'
   mydestination:                    'localhost.$mydomain, localhost, $myhostname, $mydomain'
@@ -197,6 +206,7 @@ postfix_fw_ports:
   - { port: 465, proto: tcp }
 </pre></code>
 
+
 ### vars/family-RedHat.yml
 <pre><code>
 # list of postfix packages
@@ -274,7 +284,7 @@ postfix_maillog: /var/log/maillog
     postfix_ssl_chain: "{{ openssl_server_crt }}"
   pre_tasks:
     - name: Create 'remote_tmp'
-      file:
+      ansible.builtin.file:
         path: /root/.ansible/tmp
         state: directory
         mode: "0700"
@@ -283,6 +293,6 @@ postfix_maillog: /var/log/maillog
     - openssl
   tasks:
     - name: Include role 'postfix'
-      include_role:
+      ansible.builtin.include_role:
         name: postfix
 </pre></code>
