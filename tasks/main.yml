@@ -1,7 +1,7 @@
 ---
 
 - name: Load variables based on OS type
-  include_vars: "{{ lookup('first_found', params) }}"
+  ansible.builtin.include_vars: "{{ lookup('first_found', params) }}"
   vars:
     params:
       files:
@@ -14,7 +14,7 @@
         - "vars"
 
 - name: Assertions
-  assert:
+  ansible.builtin.assert:
     that:
       - postfix_domain is defined
       - postfix_fqdn is defined
@@ -22,34 +22,34 @@
       - postfix_ssl_chain is defined
 
 - name: Install all postfix packages
-  package:
+  ansible.builtin.package:
     name: "{{ postfix_packages }}"
     state: present
 
 - name: Enable the postfix service
-  service:
+  ansible.builtin.service:
     name: "{{ postfix_service }}"
     enabled: yes
 
 - name: Check if DH2048 file exists
-  stat:
+  ansible.builtin.stat:
     path: /etc/postfix/dh2048.pem
   register: dh2048
 
 - name: Create /etc/postfix/dh2048.pem
-  command: openssl dhparam -out /etc/postfix/dh2048.pem 2048
+  ansible.builtin.command: openssl dhparam -out /etc/postfix/dh2048.pem 2048
   when: not dh2048.stat.exists
 
 - name: Configuring postfix (main.cf)
-  lineinfile:
-    path:   /etc/postfix/main.cf
+  ansible.builtin.lineinfile:
+    path: /etc/postfix/main.cf
     regexp: "^(#)?{{ item.key }}(\\s)?=.*"
-    line:   "{{ item.key }} = {{ (item.value|join(', ')) if item.value|type_debug == 'list' else item.value }}"
-  with_dict: "{{ postfix_settings | combine(postfix_settings_overwrite|default({})) }}"
+    line: "{{ item.key }} = {{ (item.value | join(', ')) if item.value | type_debug == 'list' else item.value }}"
+  with_dict: "{{ postfix_settings | combine(postfix_settings_overwrite | default({})) }}"
   notify: Restart postfix
 
 - name: Configuring submission (starttls)
-  blockinfile:
+  ansible.builtin.blockinfile:
     path: /etc/postfix/master.cf
     marker: '# {mark} ANSIBLE MANAGED BLOCK - submission'
     insertbefore: '^#submission .*'
@@ -67,7 +67,7 @@
   notify: Restart postfix
 
 - name: Configuring smtps (SSL/TLS)
-  blockinfile:
+  ansible.builtin.blockinfile:
     path: /etc/postfix/master.cf
     marker: '# {mark} ANSIBLE MANAGED BLOCK - smtps'
     insertbefore: '^#smtps .*'
@@ -85,7 +85,7 @@
   notify: Restart postfix
 
 - name: Configuring amavis
-  blockinfile:
+  ansible.builtin.blockinfile:
     path: /etc/postfix/master.cf
     marker: '# {mark} ANSIBLE MANAGED BLOCK - amavisd'
     # insertbefore: '^#smtps .*'
@@ -118,7 +118,7 @@
 # ---------------------------------------------------------
 
 - name: Create configuration files from templates
-  template:
+  ansible.builtin.template:
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
     owner: "{{ item.owner | default('root') }}"
@@ -133,7 +133,7 @@
   register: _postfix_templates
 
 - name: Convert configuration files into db format  # noqa no-handler
-  command: postmap {{ item.dest }}
+  ansible.builtin.command: postmap {{ item.dest }}
   loop: "{{ _postfix_templates.results }}"
   loop_control:
     label:
@@ -146,13 +146,13 @@
 # ---------------------------------------------------------
 
 - name: Configuring firewall for postfix (ports)
-  include_role:
+  ansible.builtin.include_role:
     name: firewall
   vars:
     firewall_ports: "{{ postfix_fw_ports }}"
 
 - name: Install postfix report script
-  template:
+  ansible.builtin.template:
     src: postfix_report.sh.j2
     dest: /usr/local/bin/postfix_report.sh
     owner: root
@@ -160,7 +160,7 @@
     mode: '0750'
 
 - name: Schedule portfix daily report
-  cron:
+  ansible.builtin.cron:
     name: Postfix report
     weekday: '*'
     minute: '05'

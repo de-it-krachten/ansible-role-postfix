@@ -3,10 +3,10 @@
 # list of postfix packages
 postfix_packages:
   - postfix
-#  - postfix-perl-scripts
+  # - postfix-perl-scripts
   - mailutils
-#  - cyrus-sasl
-#  - cyrus-sasl-plain
+  # - cyrus-sasl
+  # - cyrus-sasl-plain
   - pflogsumm
 
 # postfix service
