@@ -1,3 +1,11 @@
+# [1.3.0](https://github.com/de-it-krachten/ansible-role-postfix/compare/v1.2.0...v1.3.0) (2022-10-12)
+
+
+### Features
+
+* Move to FQCN ([1db3314](https://github.com/de-it-krachten/ansible-role-postfix/commit/1db33143d135ac0d0bafa34afe0eeeaacaf77fbe))
+* Update CI to latest standards ([19079ad](https://github.com/de-it-krachten/ansible-role-postfix/commit/19079ad7e7403968d8e3692658b631416d85688a))
+
 # [1.2.0](https://github.com/de-it-krachten/ansible-role-postfix/compare/v1.1.0...v1.2.0) (2022-07-28)
 
 
