@@ -26,6 +26,7 @@ Supported platforms
 - RockyLinux 8
 - RockyLinux 9
 - OracleLinux 8
+- OracleLinux 9
 - AlmaLinux 8
 - AlmaLinux 9
 - Debian 10 (Buster)
@@ -131,21 +132,21 @@ postfix_settings:
 
   # SPAM ==
   smtpd_helo_required: 'yes'
-#  smtpd_helo_restrictions:
-#    - permit_mynetworks
-#    - permit_sasl_authenticated
-#    - check_helo_access hash:/etc/postfix/helo_access
-#    - reject_invalid_helo_hostname
-#    - reject_non_fqdn_helo_hostname
-#    - reject_unknown_helo_hostname
-#  smtpd_sender_restrictions:
-#    - permit_mynetworks
-#    - permit_sasl_authenticated
-#    - check_client_access hash:/etc/postfix/rbl_override
-#    - check_sender_access pcre:/etc/postfix/reject_domains
-#    - reject_unknown_sender_domain
-#    - reject_unknown_reverse_client_hostname
-#    - reject_unknown_client_hostname
+  # smtpd_helo_restrictions:
+  #   - permit_mynetworks
+  #   - permit_sasl_authenticated
+  #   - check_helo_access hash:/etc/postfix/helo_access
+  #   - reject_invalid_helo_hostname
+  #   - reject_non_fqdn_helo_hostname
+  #   - reject_unknown_helo_hostname
+  # smtpd_sender_restrictions:
+  #   - permit_mynetworks
+  #   - permit_sasl_authenticated
+  #   - check_client_access hash:/etc/postfix/rbl_override
+  #   - check_sender_access pcre:/etc/postfix/reject_domains
+  #   - reject_unknown_sender_domain
+  #   - reject_unknown_reverse_client_hostname
+  #   - reject_unknown_client_hostname
   smtpd_recipient_restrictions:
     - permit_mynetworks
     - permit_sasl_authenticated
@@ -156,9 +157,9 @@ postfix_settings:
     - reject_rhsbl_sender dbl.spamhaus.org
     - reject_rbl_client zen.spamhaus.org
 
-#  # dovecot / lmtp
-#  mailbox_transport: lmtp:unix:private/dovecot-lmtp
-#  smtputf8_enable: 'no'
+  # # dovecot / lmtp
+  # mailbox_transport: lmtp:unix:private/dovecot-lmtp
+  # smtputf8_enable: 'no'
 
   # Hardening
   disable_vrfy_command: 'yes'
@@ -232,10 +233,10 @@ postfix_maillog: /var/log/maillog
 # list of postfix packages
 postfix_packages:
   - postfix
-#  - postfix-perl-scripts
+  # - postfix-perl-scripts
   - mailutils
-#  - cyrus-sasl
-#  - cyrus-sasl-plain
+  # - cyrus-sasl
+  # - cyrus-sasl-plain
   - pflogsumm
 
 # postfix service
@@ -275,22 +276,16 @@ postfix_maillog: /var/log/maillog
 <pre><code>
 - name: sample playbook for role 'postfix'
   hosts: all
-  become: "{{ molecule['converge']['become'] | default('yes') }}"
+  become: "yes"
   vars:
     postfix_ipv6: False
     postfix_domain: example.com
     postfix_fqdn: host.example.com
     postfix_ssl_key: "{{ openssl_server_key }}"
     postfix_ssl_chain: "{{ openssl_server_crt }}"
-  pre_tasks:
-    - name: Create 'remote_tmp'
-      ansible.builtin.file:
-        path: /root/.ansible/tmp
-        state: directory
-        mode: "0700"
   roles:
-    - cron
-    - openssl
+    - deitkrachten.cron
+    - deitkrachten.openssl
   tasks:
     - name: Include role 'postfix'
       ansible.builtin.include_role:

@@ -2,22 +2,16 @@
 
 - name: Converge
   hosts: all
-  become: "{{ molecule['converge']['become'] | default('yes') }}"
+  become: "yes"
   vars:
     postfix_ipv6: False
     postfix_domain: example.com
     postfix_fqdn: host.example.com
     postfix_ssl_key: "{{ openssl_server_key }}"
     postfix_ssl_chain: "{{ openssl_server_crt }}"
-  pre_tasks:
-    - name: Create 'remote_tmp'
-      ansible.builtin.file:
-        path: /root/.ansible/tmp
-        state: directory
-        mode: "0700"
   roles:
-    - cron
-    - openssl
+    - deitkrachten.cron
+    - deitkrachten.openssl
   tasks:
     - name: Include role 'ansible-role-postfix'
       ansible.builtin.include_role:

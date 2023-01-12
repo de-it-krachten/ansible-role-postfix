@@ -10,6 +10,7 @@ rules:
     max-spaces-inside: 1
     level: error
   colons:
+    # max-spaces-after: 1
     max-spaces-after: -1
     level: error
   commas:

@@ -147,7 +147,7 @@
 
 - name: Configuring firewall for postfix (ports)
   ansible.builtin.include_role:
-    name: firewall
+    name: deitkrachten.firewall
   vars:
     firewall_ports: "{{ postfix_fw_ports }}"
 

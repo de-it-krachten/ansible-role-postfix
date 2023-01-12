@@ -10,8 +10,8 @@ generic:
 molecule:
   converge:
     roles:
-      - cron
-      - openssl
+      - deitkrachten.cron
+      - deitkrachten.openssl
     vars:
       postfix_ipv6: false
       postfix_domain: example.com
@@ -20,5 +20,5 @@ molecule:
       postfix_ssl_chain: "{{ openssl_server_crt }}"
   requirements:
     roles_extra:
-      - cron
-      - openssl
+      - deitkrachten.cron
+      - deitkrachten.openssl
