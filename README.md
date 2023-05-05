@@ -207,26 +207,6 @@ postfix_fw_ports:
 </pre></code>
 
 
-### vars/family-RedHat.yml
-<pre><code>
-# list of postfix packages
-postfix_packages:
-  - postfix
-  - postfix-perl-scripts
-  - mailx
-  - cyrus-sasl
-  - cyrus-sasl-plain
-
-# postfix service
-postfix_service: postfix
-
-# dovecot delivery command
-postfix_dovecot_deliver: /usr/libexec/dovecot/deliver
-
-# postfix log file location
-postfix_maillog: /var/log/maillog
-</pre></code>
-
 ### vars/family-Debian.yml
 <pre><code>
 # list of postfix packages
@@ -255,6 +235,26 @@ postfix_packages:
   - postfix
   - postfix-perl-scripts
   - s-nail
+  - cyrus-sasl
+  - cyrus-sasl-plain
+
+# postfix service
+postfix_service: postfix
+
+# dovecot delivery command
+postfix_dovecot_deliver: /usr/libexec/dovecot/deliver
+
+# postfix log file location
+postfix_maillog: /var/log/maillog
+</pre></code>
+
+### vars/family-RedHat.yml
+<pre><code>
+# list of postfix packages
+postfix_packages:
+  - postfix
+  - postfix-perl-scripts
+  - mailx
   - cyrus-sasl
   - cyrus-sasl-plain
 
