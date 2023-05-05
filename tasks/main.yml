@@ -38,6 +38,7 @@
 
 - name: Create /etc/postfix/dh2048.pem
   ansible.builtin.command: openssl dhparam -out /etc/postfix/dh2048.pem 2048
+  changed_when: true
   when: not dh2048.stat.exists
 
 - name: Configuring postfix (main.cf)
@@ -134,6 +135,7 @@
 
 - name: Convert configuration files into db format  # noqa no-handler
   ansible.builtin.command: postmap {{ item.dest }}
+  changed_when: true
   loop: "{{ _postfix_templates.results }}"
   loop_control:
     label:
