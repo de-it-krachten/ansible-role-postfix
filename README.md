@@ -34,8 +34,8 @@ Supported platforms
 - Ubuntu 18.04 LTS
 - Ubuntu 20.04 LTS
 - Ubuntu 22.04 LTS
-- Fedora 35
 - Fedora 36
+- Fedora 37
 
 Note:
 <sup>1</sup> : no automated testing is performed on these platforms
@@ -44,66 +44,65 @@ Note:
 ### defaults/main.yml
 <pre><code>
 # Activate ipv6
-postfix_ipv6:                       true
+postfix_ipv6: true
 
 # list of all domains hosted
-postfix_domains:                    "{{ [postfix_domain] }}"
+postfix_domains: "{{ [postfix_domain] }}"
 
 # Should we configure support for amavisd
-postfix_amavisd:                    false
+postfix_amavisd: false
 
 # smtp relay host to use
-postfix_relay_use:                  false
-postfix_relay_host:                 mail.example.com
-postfix_relay_port:                 587
-postfix_relay_user:                 relay_user
-postfix_relay_pwd:                  relay_password
-
+postfix_relay_use: false
+postfix_relay_host: mail.example.com
+postfix_relay_port: 587
+postfix_relay_user: relay_user
+postfix_relay_pwd: relay_password
 
 postfix_settings:
-  myhostname:                       '{{ postfix_fqdn }}'
-  mydomain:                         '{{ postfix_domain }}'
-  myorigin:                         '$mydomain'
-  home_mailbox:                     'mail/'
-  mynetworks:                       "{{ '127.0.0.0/8' if not postfix_ipv6 | bool else '127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128' }}"
-  inet_interfaces:                  'all'
-  inet_protocols:                   'ipv4'
-  mydestination:                    'localhost.$mydomain, localhost, $myhostname, $mydomain'
-  mailbox_command:                  '{{ postfix_dovecot_deliver }}'
-  smtpd_sasl_type:                  'dovecot'
-  smtpd_sasl_path:                  'private/auth'
-  smtpd_sasl_local_domain:          ''
-  smtpd_sasl_security_options:      'noanonymous'
-  broken_sasl_auth_clients:         'yes'
-  smtpd_sasl_auth_enable:           'yes'
-  smtpd_tls_loglevel:               '1'
-  smtpd_tls_key_file:               '{{ postfix_ssl_key }}'
-  smtpd_tls_cert_file:              '{{ postfix_ssl_chain }}'
-  smtpd_tls_received_header:        'yes'
-  smtpd_tls_session_cache_timeout:  '3600s'
-  tls_random_source:                'dev:/dev/urandom'
-  virtual_alias_maps:               'hash:/etc/postfix/virtual'
-  virtual_alias_domains:            "{{ postfix_domains | difference([postfix_domain]) | join(' ') }}"
-  message_size_limit:               '52428800'
-  mailbox_size_limit:               '0'
-  header_checks:                    'regexp:/etc/postfix/header_checks'
+  myhostname: '{{ postfix_fqdn }}'
+  mydomain: '{{ postfix_domain }}'
+  myorigin: '$mydomain'
+  home_mailbox: 'mail/'
+  mynetworks: "{{ '127.0.0.0/8' if not postfix_ipv6 | bool else '127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128' }}"
+  inet_interfaces: 'all'
+  inet_protocols: 'ipv4'
+  mydestination: 'localhost.$mydomain, localhost, $myhostname, $mydomain'
+  mailbox_command: '{{ postfix_dovecot_deliver }}'
+  smtpd_sasl_type: 'dovecot'
+  smtpd_sasl_path: 'private/auth'
+  smtpd_sasl_local_domain: ''
+  smtpd_sasl_security_options: 'noanonymous'
+  broken_sasl_auth_clients: 'yes'
+  smtpd_sasl_auth_enable: 'yes'
+  smtpd_tls_loglevel: '1'
+  smtpd_tls_key_file: '{{ postfix_ssl_key }}'
+  smtpd_tls_cert_file: '{{ postfix_ssl_chain }}'
+  smtpd_tls_received_header: 'yes'
+  smtpd_tls_session_cache_timeout: '3600s'
+  tls_random_source: 'dev:/dev/urandom'
+  virtual_alias_maps: 'hash:/etc/postfix/virtual'
+  virtual_alias_domains: "{{ postfix_domains | difference([postfix_domain]) | join(' ') }}"
+  message_size_limit: '52428800'
+  mailbox_size_limit: '0'
+  header_checks: 'regexp:/etc/postfix/header_checks'
   # amavis ==
-  # content_filter:                   'smtp-amavis:[127.0.0.1]:10024'
+  # content_filter: 'smtp-amavis:[127.0.0.1]:10024'
 
   # smtp | outgoing
   relayhost: >-
     {{ (postfix_relay_host + ':' + postfix_relay_port|string) if postfix_relay_use|bool }}
-  smtp_sasl_auth_enable:            'yes'
-  smtp_sasl_security_options:       'noanonymous'
-  smtp_sasl_password_maps:          'hash:/etc/postfix/sasl_passwd'
-  smtp_use_tls:                     'yes'
-  smtp_tls_security_level:          'encrypt'
-  smtp_tls_note_starttls_offer:     'yes'
-  smtp_tls_mandatory_protocols:     '!SSLv2,!SSLv3,!TLSv1,!TLSv1.1'
-  smtp_tls_protocols:               '!SSLv2,!SSLv3,!TLSv1,!TLSv1.1'
+  smtp_sasl_auth_enable: 'yes'
+  smtp_sasl_security_options: 'noanonymous'
+  smtp_sasl_password_maps: 'hash:/etc/postfix/sasl_passwd'
+  smtp_use_tls: 'yes'
+  smtp_tls_security_level: 'encrypt'
+  smtp_tls_note_starttls_offer: 'yes'
+  smtp_tls_mandatory_protocols: '!SSLv2,!SSLv3,!TLSv1,!TLSv1.1'
+  smtp_tls_protocols: '!SSLv2,!SSLv3,!TLSv1,!TLSv1.1'
 
   # smtpd | incoming
-  smtpd_tls_mandatory_ciphers:      'high'
+  smtpd_tls_mandatory_ciphers: 'high'
   smtpd_tls_mandatory_exclude_ciphers:
     - aNULL
     - eNULL
@@ -123,12 +122,12 @@ postfix_settings:
     - EDH-RSA-DES-CBC3-SHA
     - KRB5-DES
     - CBC3-SHA
-  smtpd_tls_security_level:         'may'
-  smtpd_tls_mandatory_protocols:    '!SSLv2,!SSLv3,!TLSv1,!TLSv1.1'
-  smtpd_tls_protocols:              '!SSLv2,!SSLv3,!TLSv1,!TLSv1.1'
+  smtpd_tls_security_level: 'may'
+  smtpd_tls_mandatory_protocols: '!SSLv2,!SSLv3,!TLSv1,!TLSv1.1'
+  smtpd_tls_protocols: '!SSLv2,!SSLv3,!TLSv1,!TLSv1.1'
 
   # DH1024 ==
-  smtpd_tls_dh1024_param_file:      '/etc/postfix/dh2048.pem'
+  smtpd_tls_dh1024_param_file: '/etc/postfix/dh2048.pem'
 
   # SPAM ==
   smtpd_helo_required: 'yes'
@@ -166,9 +165,9 @@ postfix_settings:
 
 # setting for rspamd
 postfix_rspamd:
-  smtpd_milters:                    'inet:localhost:11332'
-  milter_default_action:            accept
-  milter_protocol:                  6
+  smtpd_milters: 'inet:localhost:11332'
+  milter_default_action: accept
+  milter_protocol: 6
 
 # lists of accepted/rejected top-level domains
 postfix_accept_tld: []
@@ -208,26 +207,6 @@ postfix_fw_ports:
 </pre></code>
 
 
-### vars/family-RedHat.yml
-<pre><code>
-# list of postfix packages
-postfix_packages:
-  - postfix
-  - postfix-perl-scripts
-  - mailx
-  - cyrus-sasl
-  - cyrus-sasl-plain
-
-# postfix service
-postfix_service: postfix
-
-# dovecot delivery command
-postfix_dovecot_deliver: /usr/libexec/dovecot/deliver
-
-# postfix log file location
-postfix_maillog: /var/log/maillog
-</pre></code>
-
 ### vars/family-Debian.yml
 <pre><code>
 # list of postfix packages
@@ -256,6 +235,26 @@ postfix_packages:
   - postfix
   - postfix-perl-scripts
   - s-nail
+  - cyrus-sasl
+  - cyrus-sasl-plain
+
+# postfix service
+postfix_service: postfix
+
+# dovecot delivery command
+postfix_dovecot_deliver: /usr/libexec/dovecot/deliver
+
+# postfix log file location
+postfix_maillog: /var/log/maillog
+</pre></code>
+
+### vars/family-RedHat.yml
+<pre><code>
+# list of postfix packages
+postfix_packages:
+  - postfix
+  - postfix-perl-scripts
+  - mailx
   - cyrus-sasl
   - cyrus-sasl-plain
 
