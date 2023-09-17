@@ -29,13 +29,14 @@ Supported platforms
 - OracleLinux 9
 - AlmaLinux 8
 - AlmaLinux 9
-- Debian 10 (Buster)
+- SUSE Linux Enterprise 15<sup>1</sup>
+- Debian 10 (Buster)<sup>1</sup>
 - Debian 11 (Bullseye)
-- Ubuntu 18.04 LTS
+- Debian 12 (Bookworm)
 - Ubuntu 20.04 LTS
 - Ubuntu 22.04 LTS
-- Fedora 36
 - Fedora 37
+- Fedora 38
 
 Note:
 <sup>1</sup> : no automated testing is performed on these platforms
@@ -235,6 +236,25 @@ postfix_packages:
   - postfix
   - postfix-perl-scripts
   - s-nail
+  - cyrus-sasl
+  - cyrus-sasl-plain
+
+# postfix service
+postfix_service: postfix
+
+# dovecot delivery command
+postfix_dovecot_deliver: /usr/libexec/dovecot/deliver
+
+# postfix log file location
+postfix_maillog: /var/log/maillog
+</pre></code>
+
+### vars/family-Suse.yml
+<pre><code>
+# list of postfix packages
+postfix_packages:
+  - postfix
+  - mailx
   - cyrus-sasl
   - cyrus-sasl-plain
 

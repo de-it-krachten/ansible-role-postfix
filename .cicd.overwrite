@@ -7,6 +7,13 @@ generic:
   role_description: |
     Install/manage Postfix
 
+# Supported platforms
+platforms:
+  opensuse15:
+    ci: false
+    supported: false
+
+# Molecule
 molecule:
   converge:
     roles:
