@@ -13,7 +13,6 @@ Install/manage Postfix
 None
 
 #### Collections
-- community.general
 
 ## Platforms
 
@@ -29,7 +28,6 @@ Supported platforms
 - OracleLinux 9
 - AlmaLinux 8
 - AlmaLinux 9
-- Debian 10 (Buster)<sup>1</sup>
 - Debian 11 (Bullseye)
 - Debian 12 (Bookworm)
 - Ubuntu 20.04 LTS
@@ -294,13 +292,13 @@ postfix_maillog: /var/log/maillog
 <pre><code>
 - name: sample playbook for role 'postfix'
   hosts: all
-  become: "yes"
+  become: 'yes'
   vars:
-    postfix_ipv6: False
+    postfix_ipv6: false
     postfix_domain: example.com
     postfix_fqdn: host.example.com
-    postfix_ssl_key: "{{ openssl_server_key }}"
-    postfix_ssl_chain: "{{ openssl_server_crt }}"
+    postfix_ssl_key: '{{ openssl_server_key }}'
+    postfix_ssl_chain: '{{ openssl_server_crt }}'
   roles:
     - deitkrachten.cron
     - deitkrachten.openssl
