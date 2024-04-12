@@ -128,9 +128,7 @@
     backup: yes
   loop: "{{ postfix_templates }}"
   loop_control:
-    label:
-      - "{{ item.src }}"
-      - "{{ item.dest }}"
+    label: "{{ item.dest }}"
   register: _postfix_templates
 
 - name: Convert configuration files into db format  # noqa no-handler
@@ -138,8 +136,7 @@
   changed_when: true
   loop: "{{ _postfix_templates.results }}"
   loop_control:
-    label:
-      - "{{ item.dest }}"
+    label: "{{ item.dest }}"
   when: item.changed
 
 
