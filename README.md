@@ -13,6 +13,7 @@ Install/manage Postfix
 None
 
 #### Collections
+None
 
 ## Platforms
 
@@ -32,8 +33,9 @@ Supported platforms
 - Debian 12 (Bookworm)
 - Ubuntu 20.04 LTS
 - Ubuntu 22.04 LTS
-- Fedora 37
-- Fedora 38
+- Ubuntu 24.04 LTS
+- Fedora 39
+- Fedora 40
 
 Note:
 <sup>1</sup> : no automated testing is performed on these platforms
@@ -246,11 +248,12 @@ postfix_dovecot_deliver: /usr/libexec/dovecot/deliver
 postfix_maillog: /var/log/maillog
 </pre></code>
 
-### vars/family-Suse.yml
+### vars/family-RedHat.yml
 <pre><code>
 # list of postfix packages
 postfix_packages:
   - postfix
+  - postfix-perl-scripts
   - mailx
   - cyrus-sasl
   - cyrus-sasl-plain
@@ -265,12 +268,11 @@ postfix_dovecot_deliver: /usr/libexec/dovecot/deliver
 postfix_maillog: /var/log/maillog
 </pre></code>
 
-### vars/family-RedHat.yml
+### vars/family-Suse.yml
 <pre><code>
 # list of postfix packages
 postfix_packages:
   - postfix
-  - postfix-perl-scripts
   - mailx
   - cyrus-sasl
   - cyrus-sasl-plain
