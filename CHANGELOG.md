@@ -1,3 +1,15 @@
+# [1.6.0](https://github.com/de-it-krachten/ansible-role-postfix/compare/v1.5.0...v1.6.0) (2024-06-03)
+
+
+### Bug Fixes
+
+* Change loop/label for latest ansible ([c667b32](https://github.com/de-it-krachten/ansible-role-postfix/commit/c667b32b2d4ff452344f7e8a5ea6b8d602471cd4))
+
+
+### Features
+
+* Add support for Ubuntu 24.04 LTS + Fedora 40 ([f149b85](https://github.com/de-it-krachten/ansible-role-postfix/commit/f149b85b608ea0bb1eb19d7089ac8874f887c2c8))
+
 # [1.5.0](https://github.com/de-it-krachten/ansible-role-postfix/compare/v1.4.0...v1.5.0) (2023-09-17)
 
 
