@@ -1,3 +1,10 @@
+# [1.7.0](https://github.com/de-it-krachten/ansible-role-postfix/compare/v1.6.0...v1.7.0) (2024-12-29)
+
+
+### Features
+
+* Update supported platforms & CI ([927270c](https://github.com/de-it-krachten/ansible-role-postfix/commit/927270ca35b1674c38e7429762aad493a56982fc))
+
 # [1.6.0](https://github.com/de-it-krachten/ansible-role-postfix/compare/v1.5.0...v1.6.0) (2024-06-03)
 
 
