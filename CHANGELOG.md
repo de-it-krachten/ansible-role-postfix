@@ -1,3 +1,14 @@
+# [1.8.0](https://github.com/de-it-krachten/ansible-role-postfix/compare/v1.7.0...v1.8.0) (2025-08-07)
+
+
+### Features
+
+* Add support for AlmaLinux 10 ([27fe397](https://github.com/de-it-krachten/ansible-role-postfix/commit/27fe3972918f2b51e3578c6f94e62d5bfb5ffdfa))
+* Add support for Debian 13 (Trixie) ([e4d312c](https://github.com/de-it-krachten/ansible-role-postfix/commit/e4d312cdc55d88482f84d67f9ed0e24ff8325cf8))
+* Add support for OracleLinux 10 ([a19b732](https://github.com/de-it-krachten/ansible-role-postfix/commit/a19b732f7cb0223d9d0011c771fccc10faa7dadf))
+* Add support for Red Hat Enterprise Linux 10 ([77cda7e](https://github.com/de-it-krachten/ansible-role-postfix/commit/77cda7e76c763accc89951ba77efafaf48617e1c))
+* Add support for RockyLinux 10 ([0d1037a](https://github.com/de-it-krachten/ansible-role-postfix/commit/0d1037a497570bd8535a531411b1e67d931a021f))
+
 # [1.7.0](https://github.com/de-it-krachten/ansible-role-postfix/compare/v1.6.0...v1.7.0) (2024-12-29)
 
 
