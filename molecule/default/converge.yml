@@ -4,6 +4,7 @@
   hosts: all
   become: "yes"
   vars:
+    molecule_driver: "{{ lookup('env', 'MOLECULE_DRIVER_NAME') }}"
     postfix_ipv6: False
     postfix_domain: example.com
     postfix_fqdn: host.example.com
