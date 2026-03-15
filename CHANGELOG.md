@@ -1,3 +1,11 @@
+# [1.9.0](https://github.com/de-it-krachten/ansible-role-postfix/compare/v1.8.0...v1.9.0) (2026-03-15)
+
+
+### Features
+
+* Added support for Fedora 43 ([f84fcd2](https://github.com/de-it-krachten/ansible-role-postfix/commit/f84fcd2284fdcb5a5fd6341f176f5b55680616e5))
+* Drop support for Fedora 41 ([93775f8](https://github.com/de-it-krachten/ansible-role-postfix/commit/93775f8d09a094f3f4a909f0bbd715c8a51eeb00))
+
 # [1.8.0](https://github.com/de-it-krachten/ansible-role-postfix/compare/v1.7.0...v1.8.0) (2025-08-07)
 
 
